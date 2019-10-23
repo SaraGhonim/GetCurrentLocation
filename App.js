@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { View, Text, TouchableOpacity, TextInput,ActivityIndicator, StyleSheet ,StatusBar,Alert} from 'react-native'
-import MapView from 'react-native-maps';
+import MapView ,{ Marker,Polyline,AnimatedRegion } from 'react-native-maps';
 import {PermissionsAndroid} from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 
@@ -8,8 +8,27 @@ class Inputs extends Component {
 
    state = {
       isLoading: true,
-  latitude:0,
-  longitude:0
+  latitude: 0,
+  longitude: 0,
+  markers: [
+    {
+     latlng: new AnimatedRegion({ latitude:  31.00, longitude: 30.79 }),
+        title: "Best Place",
+        description: "Description1",
+        id: 1,
+        ImageSource :"https://developers.google.com/maps/documentation/javascript/examples/full/images/parking_lot_maps.png"
+    },
+    {
+        latlng: {
+            latitude: 24.09,
+            longitude: 32.90
+        },
+        title: "Best Place2",
+        description: "Description 2",
+        id: 2
+    }
+],
+routeCoordinates:[{latitude: 24.09,longitude: 32.90},{ latitude:  31.00,longitude: 30.79}]
       
     }
 
@@ -59,8 +78,9 @@ class Inputs extends Component {
     }
 
    render() {
+     console.log('saraaaaa')
       return (
-         <View style = {{flex:1}}>
+         <View style = {styles.container}>
            {
           (this.state.isLoading)? 
           
@@ -68,14 +88,41 @@ class Inputs extends Component {
 
           : 
             <MapView
-          style={{flex:1}}
+          style={styles.container}
           initialRegion={{
             latitude: this.state.latitude,
             longitude: this.state.longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
-        />}
+            latitudeDelta: 10.92,
+            longitudeDelta: 10.921,
+          }} >
+     {this.state.markers.map((marker1) => (
+      <Marker
+      identifier="DestMarker"
+
+      coordinate={marker1.latlng}
+      title={marker1.title}
+      description={marker1.description}
+      image={marker1.ImageSource}
+      width={48}
+      height={48}
+
+       /> 
+     
+       ))}
+       {this.state.markers.map((marker2) => (
+      <Marker 
+      
+      coordinate={ marker2.latlng }
+      title={marker2.title}
+      description={marker2.description}
+       /> 
+     
+       ))}
+        <Polyline coordinates={this.state.routeCoordinates} strokeWidth={5} />
+
+           </MapView>
+        
+        }
             <TouchableOpacity
                style = {styles.submitButton}
                onPress = {
@@ -91,7 +138,7 @@ export default Inputs
 
 const styles = StyleSheet.create({
    container: {
-      paddingTop: 23
+     flex:1
    },
    input: {
       margin: 15,
